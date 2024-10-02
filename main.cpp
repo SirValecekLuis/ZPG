@@ -3,5 +3,6 @@
 int main() {
     auto *app = new Application();
 
+    app->init();
     app->start();
 }

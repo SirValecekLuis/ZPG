@@ -2,8 +2,9 @@
 // Created by tobiasjanca on 10/2/24.
 //
 
-#include "application.h"
 #include "shaders.h"
+#include "application.h"
+
 
 float z_rotate = 1.f;
 
@@ -75,8 +76,7 @@ const char *fragment_shader_str_red =
         "}";
 
 
-void Application::start() {
-    GLFWwindow *window;
+void Application::init() {
     glfwSetErrorCallback(error_callback);
     if (!glfwInit()) {
         fprintf(stderr, "ERROR: could not start GLFW3\n");
@@ -99,7 +99,9 @@ void Application::start() {
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
+}
 
+void Application::start() {
     //vertex buffer object (VBO)
     GLuint VBO = 0;
     glGenBuffers(1, &VBO); // generate the VBO

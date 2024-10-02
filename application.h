@@ -4,11 +4,17 @@
 
 #ifndef APP_H
 #define APP_H
+#include <GLFW/glfw3.h>
 
 
 class Application {
 public:
     void start();
+
+    void init();
+
+private:
+    GLFWwindow *window = nullptr;
 };
 
 

@@ -5,8 +5,6 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#endif //MAIN_H
-
 // Include GLEW
 #include <GL/glew.h>
 
@@ -23,7 +21,6 @@ public:
     virtual ~Shader() = default;
 
     GLuint shader_id = 0;
-
 };
 
 class VertexShader final : public Shader {
@@ -45,3 +42,5 @@ public:
 private:
     GLuint shader_id;
 };
+
+#endif //MAIN_H
