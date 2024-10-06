@@ -79,7 +79,7 @@ auto fragment_shader_str_red =
         "#version 330\n"
         "out vec4 frag_colour;"
         "void main () {"
-        "     frag_colour = vec4 (1.0, 0.f 0.f, 1.0);"
+        "     frag_colour = vec4 (1.0, 0.f, 0.f, 1.0);"
         "}";
 
 
@@ -125,8 +125,9 @@ void Application::start() {
         // clear color and depth buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        quad->draw();
         triag->draw();
+        quad->draw();
+
 
         // update other events like input handling
         glfwPollEvents();
