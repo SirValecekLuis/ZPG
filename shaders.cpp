@@ -23,5 +23,6 @@ ShaderProgram::ShaderProgram(const VertexShader &vertex, const FragmentShader &f
 }
 
 void ShaderProgram::set_shader() const {
+    glLinkProgram(shader_id);
     glUseProgram(shader_id);
 }

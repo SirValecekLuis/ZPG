@@ -12,13 +12,17 @@ add_executable(ZPG
         shaders.cpp
         shaders.h
         application.h
-        application.cpp)
+        application.cpp
+        buffers.cpp
+        buffers.h
+        model.cpp
+        model.h)
 
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(ZPG PRIVATE glfw)
 
-find_package(glm CONFIG REQUIRED)
-target_link_libraries(ZPG PRIVATE glm::glm)
+#find_package(glm CONFIG REQUIRED)
+#target_link_libraries(ZPG PRIVATE glm::glm)
 
 find_package(glew CONFIG REQUIRED)
 target_link_libraries(ZPG PRIVATE GLEW::GLEW)

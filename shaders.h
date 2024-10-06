@@ -2,19 +2,11 @@
 // Created by tobiasjanca on 10/2/24.
 //
 
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef SHADERS_H
+#define SHADERS_H
 
 // Include GLEW
 #include <GL/glew.h>
-
-//Include GLFW
-#include <GLFW/glfw3.h>
-
-//Include the standard C++ headers
-#include <cstdlib>
-#include <cstdio>
-
 
 class Shader {
 public:
@@ -35,12 +27,12 @@ public:
 
 class ShaderProgram {
 public:
-    ShaderProgram(const VertexShader &vertex_shader, const FragmentShader &fragment_shader);
+    ShaderProgram(const VertexShader &vertex, const FragmentShader &fragment);
 
     void set_shader() const;
 
 private:
-    GLuint shader_id;
+    GLuint shader_id = 0;
 };
 
-#endif //MAIN_H
+#endif //SHADERS_H
