@@ -4,8 +4,16 @@
 
 #ifndef APP_H
 #define APP_H
+
+#include <cstdio>
+#include <memory>
+#include <cstdlib>
+
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "scene.h"
+#include "scene_manager.h"
 
 class Application {
 public:

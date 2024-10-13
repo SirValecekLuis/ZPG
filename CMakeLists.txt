@@ -18,7 +18,11 @@ add_executable(ZPG
         model.cpp
         model.h
         matrix.cpp
-        matrix.h)
+        matrix.h
+        scene.cpp
+        scene.h
+        scene_manager.cpp
+        scene_manager.h)
 
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(ZPG PRIVATE glfw)

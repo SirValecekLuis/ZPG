@@ -4,6 +4,7 @@
 
 #include "shaders.h"
 
+
 Shader::~Shader() {
     if (shader_id != 0) {
         glDeleteShader(shader_id);
