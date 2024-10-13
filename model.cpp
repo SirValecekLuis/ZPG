@@ -4,13 +4,18 @@
 
 #include "model.h"
 
-Model::Model(void *data, const GLsizeiptr size, ShaderProgram* shader) {
+Model::Model(const float *data, const GLsizeiptr size, ShaderProgram &shader) : shader(shader) {
     this->data = data;
     this->size = size;
-    this->shader = shader;
 
     create_arrays();
 }
+
+Model::~Model() {
+    delete vbo;
+    delete vao;
+}
+
 
 void Model::create_arrays() {
     vbo = new VBO(data, size);
@@ -18,7 +23,7 @@ void Model::create_arrays() {
 }
 
 void Model::draw() const {
-    shader->set_shader();
+    shader.use_shader();
     vao->bind_vao();
 
     glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(size)); //mode,first,count

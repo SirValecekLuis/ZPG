@@ -16,13 +16,15 @@ add_executable(ZPG
         buffers.cpp
         buffers.h
         model.cpp
-        model.h)
+        model.h
+        matrix.cpp
+        matrix.h)
 
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(ZPG PRIVATE glfw)
 
-#find_package(glm CONFIG REQUIRED)
-#target_link_libraries(ZPG PRIVATE glm::glm)
+find_package(glm CONFIG REQUIRED)
+target_link_libraries(ZPG PRIVATE glm::glm)
 
 find_package(glew CONFIG REQUIRED)
 target_link_libraries(ZPG PRIVATE GLEW::GLEW)

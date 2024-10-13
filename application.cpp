@@ -2,15 +2,44 @@
 // Created by tobiasjanca on 10/2/24.
 //
 
-#include "shaders.h"
-#include "application.h"
-
 #include <cstdio>
 #include <cstdlib>
 
+#include "shaders.h"
+#include "application.h"
+
 #include "buffers.h"
 #include "model.h"
+#include "sphere.h"
+#include "tree.h"
 
+#include <vector>
+#include <random>
+
+std::vector<Matrix *> generate_tree_matrices(int tree_num = 15) {
+    std::vector<Matrix *> matrices;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    std::uniform_real_distribution<> xDis(-0.8f, 0.8f);
+    std::uniform_real_distribution<> yDis(-0.5f, 0.5f);
+    std::uniform_real_distribution<> zDis(-0.4f, 0.4f);
+    std::uniform_real_distribution<> rotDis(-20.0, 20.0);
+    std::uniform_real_distribution<> scaleDis(0.03, 0.07);
+
+    for (int i = 0; i < tree_num; ++i) {
+        float x = xDis(gen);
+        float y = yDis(gen);
+        float z = zDis(gen);
+        float rotateX = rotDis(gen);
+        float rotateY = rotDis(gen);
+        float scale = scaleDis(gen);
+
+        matrices.push_back(new Matrix(rotateX, rotateY, x, y, z, scale));
+    }
+
+    return matrices;
+}
 
 static void error_callback(int error, const char *description) { fputs(description, stderr); }
 
@@ -41,47 +70,33 @@ static void error_callback(int error, const char *description) { fputs(descripti
 //     if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);
 // }
 
-float quad_arr[] = {
-    // Quads
-    0.5f, 0.f, 0.f,
-    0.f, 0.5f, 0.f,
-    0.5f, 0.5f, 0.f, // Top
+auto vertex_shader_str_matrix = R"glsl(
+        #version 330 core
+        layout (location = 0) in vec3 aPos;
+        layout (location = 1) in vec3 aColor;
 
-    0.5f, 0.f, 0.f,
-    0.f, 0.5f, 0.f,
-    0.f, 0.f, 0.f,
-};
+        out vec3 fragColor;
 
-float triag_arr[] = {
-    // Triangle
-    -0.5f, 0.f, 0.f,
-    0.f, -0.5f, 0.f,
-    -0.5f, -0.5f, 0.f,
-};
+        uniform mat4 modelMatrix;
 
+        void main()
+        {
+            gl_Position = modelMatrix * vec4(aPos, 1.0);
+            fragColor = aColor;
+        }
+)glsl";
 
-auto vertex_shader_str =
-        "#version 330\n"
-        "layout(location=0) in vec3 vp;"
-        "void main () {"
-        "     gl_Position = vec4 (vp, 1.0);"
-        "}";
+auto fragment_shader_str_matrix = R"glsl(
+        #version 330 core
+        in vec3 fragColor;  // Receive the color from the vertex shader
 
+        out vec4 FragColor;
 
-auto fragment_shader_str_yell =
-        "#version 330\n"
-        "out vec4 frag_colour;"
-        "void main () {"
-        "     frag_colour = vec4 (1.0, 1.0, 0.f, 1.0);"
-        "}";
-
-auto fragment_shader_str_red =
-        "#version 330\n"
-        "out vec4 frag_colour;"
-        "void main () {"
-        "     frag_colour = vec4 (1.0, 0.f, 0.f, 1.0);"
-        "}";
-
+        void main()
+        {
+            FragColor = vec4(fragColor, 1.0);  // Use the passed color, with full opacity
+        }
+)glsl";
 
 void Application::init() {
     glfwSetErrorCallback(error_callback);
@@ -90,7 +105,7 @@ void Application::init() {
         exit(EXIT_FAILURE);
     }
 
-    window = glfwCreateWindow(800, 600, "ZPG", nullptr, nullptr);
+    window = glfwCreateWindow(1200, 900, "ZPG", nullptr, nullptr);
     if (!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
@@ -106,34 +121,45 @@ void Application::init() {
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
+
+    glEnable(GL_DEPTH_TEST);
 }
 
-void Application::start() {
-    //create and compile shaders
-    auto *vertex_shader = new VertexShader(vertex_shader_str);
+void Application::start() const {
+    std::vector<Matrix *> tree_matrices = generate_tree_matrices();
 
-    auto *fragment_shader_red = new FragmentShader(fragment_shader_str_red);
-    auto *fragment_shader_yell = new FragmentShader(fragment_shader_str_yell);
+    auto *vertex_shader_matrix = new VertexShader(vertex_shader_str_matrix);
 
-    auto *shader_program_red = new ShaderProgram(*vertex_shader, *fragment_shader_red);
-    auto *shader_program_yell = new ShaderProgram(*vertex_shader, *fragment_shader_yell);
+    auto *fragment_shader_matrix = new FragmentShader(fragment_shader_str_matrix);
 
-    auto *triag = new Model(triag_arr, sizeof(triag_arr), shader_program_red);
-    auto *quad = new Model(quad_arr, sizeof(quad_arr), shader_program_yell);
+    auto *shader_program_matrix = new ShaderProgram(*vertex_shader_matrix, *fragment_shader_matrix);
+
+    auto *tree_model = new Model(tree, sizeof(tree), *shader_program_matrix);
 
     while (!glfwWindowShouldClose(window)) {
         // clear color and depth buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        triag->draw();
-        quad->draw();
-
+        for (const auto &mat: tree_matrices) {
+            shader_program_matrix->change_matrix(*mat);
+            tree_model->draw();
+        }
 
         // update other events like input handling
         glfwPollEvents();
         // put the stuff we’ve been drawing onto the display
         glfwSwapBuffers(window);
     }
+
+    for (const Matrix *mat: tree_matrices) {
+        delete mat;
+    }
+    tree_matrices.clear();
+
+    delete vertex_shader_matrix;
+    delete fragment_shader_matrix;
+    delete shader_program_matrix;
+    delete tree_model;
 
     glfwDestroyWindow(window);
 

@@ -9,7 +9,7 @@
 
 class Application {
 public:
-    void start();
+    void start() const;
 
     void init();
 

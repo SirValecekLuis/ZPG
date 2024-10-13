@@ -12,16 +12,17 @@
 
 class Model {
 public:
-    Model(void *data, GLsizeiptr size, ShaderProgram* shader);
+    Model(const float *data, GLsizeiptr size, ShaderProgram& shader);
+    ~Model();
 
     void draw() const;
 
 private:
-    void *data;
+    const float *data;
     GLsizeiptr size;
     VBO *vbo = nullptr;
     VAO *vao = nullptr;
-    ShaderProgram* shader;
+    ShaderProgram& shader;
 
     void create_arrays();
 };

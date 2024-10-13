@@ -10,6 +10,7 @@
 class VBO {
 public:
     VBO(const void *data, GLsizeiptr size);
+    ~VBO();
 
     GLuint vbo = 0;
 };
@@ -17,6 +18,7 @@ public:
 class VAO {
 public:
     explicit VAO(const VBO &vbo);
+    ~VAO();
 
     void bind_vao() const;
 
