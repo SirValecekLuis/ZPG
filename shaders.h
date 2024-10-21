@@ -13,6 +13,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "matrix.h"
+#include "camera.h"
+#include "observer.h"
 
 class Shader {
 public:
@@ -31,11 +33,11 @@ public:
     explicit FragmentShader(const char *shader_string);
 };
 
-class ShaderProgram {
+class ShaderProgram : public Observer {
 public:
     ShaderProgram(const VertexShader &vertex, const FragmentShader &fragment);
 
-    ShaderProgram(const VertexShader &vertex, const FragmentShader &fragment, const Matrix& matrix);
+    ShaderProgram(const VertexShader &vertex, const FragmentShader &fragment, const Matrix &matrix);
 
     ~ShaderProgram();
 
@@ -45,12 +47,22 @@ public:
 
     void change_fragment_shader(const VertexShader &fragment) const;
 
-    void change_matrix(const Matrix& matrix);
+    void set_model_mat(const Matrix &matrix);
+
+    void set_view_matrix(const glm::mat4& view);
+
+    void set_projection_matrix(const glm::mat4& projection);
+
+    void update(Subject* subject) override;
 
 private:
     GLuint shader_id = 0;
-    GLint matrix_id = -1;
-    glm::mat4 mat{};
+    GLint model_matrix_id = -1;
+    GLint view_matrix_id = -1;
+    GLint projection_matrix_id = -1;
+    glm::mat4 model_mat{};
+    glm::mat4 view_mat{};
+    glm::mat4 projection_mat{};
 };
 
 #endif //SHADERS_H

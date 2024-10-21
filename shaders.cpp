@@ -44,7 +44,7 @@ ShaderProgram::ShaderProgram(const VertexShader &vertex, const FragmentShader &f
 
 ShaderProgram::ShaderProgram(const VertexShader &vertex, const FragmentShader &fragment,
                              const Matrix &matrix) : ShaderProgram(vertex, fragment) {
-    change_matrix(matrix);
+    set_model_mat(matrix);
 }
 
 ShaderProgram::~ShaderProgram() {
@@ -65,18 +65,53 @@ void ShaderProgram::change_vertex_shader(const VertexShader &vertex) const {
 void ShaderProgram::use_shader() const {
     glUseProgram(shader_id);
 
-    if (matrix_id != -1) {
-        glUniformMatrix4fv(matrix_id, 1, GL_FALSE, &mat[0][0]);
+    if (model_matrix_id != -1) {
+        glUniformMatrix4fv(model_matrix_id, 1, GL_FALSE, &model_mat[0][0]);
+    }
+    if (view_matrix_id != -1) {
+        glUniformMatrix4fv(view_matrix_id, 1, GL_FALSE, &view_mat[0][0]);
+    }
+    if (projection_matrix_id != -1) {
+        glUniformMatrix4fv(projection_matrix_id, 1, GL_FALSE, &projection_mat[0][0]);
     }
 }
 
 
-void ShaderProgram::change_matrix(const Matrix& matrix) {
-    mat = matrix.mat;
+void ShaderProgram::set_model_mat(const Matrix &matrix) {
+    model_mat = matrix.mat;
 
-    matrix_id = glGetUniformLocation(shader_id, "modelMatrix");
+    model_matrix_id = glGetUniformLocation(shader_id, "modelMatrix");
 
-    if (matrix_id == -1) {
+    if (model_matrix_id == -1) {
         std::cerr << "Can't find a var 'modelMatrix'" << std::endl;
+    }
+}
+
+
+void ShaderProgram::set_view_matrix(const glm::mat4 &view) {
+    view_mat = view;
+
+    view_matrix_id = glGetUniformLocation(shader_id, "viewMatrix");
+
+    if (view_matrix_id != -1) {
+        glUniformMatrix4fv(view_matrix_id, 1, GL_FALSE, &view_mat[0][0]);
+    }
+}
+
+
+void ShaderProgram::set_projection_matrix(const glm::mat4 &projection) {
+    projection_mat = projection;
+
+    projection_matrix_id = glGetUniformLocation(shader_id, "projectionMatrix");
+
+    if (projection_matrix_id != -1) {
+        glUniformMatrix4fv(projection_matrix_id, 1, GL_FALSE, &projection_mat[0][0]);
+    }
+}
+
+void ShaderProgram::update(Subject *subject) {
+    if (const auto *camera = dynamic_cast<Camera *>(subject)) {
+        set_view_matrix(camera->get_view_matrix());
+        set_projection_matrix(camera->get_projection_matrix());
     }
 }

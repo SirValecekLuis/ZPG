@@ -27,7 +27,9 @@ private:
     std::string current_scene_name;
     GLFWwindow *window;
 
-    static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
+    static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
+    static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+
 };
 
 #endif // SCENE_MANAGER_H

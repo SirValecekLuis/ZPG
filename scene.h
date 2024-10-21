@@ -1,7 +1,3 @@
-//
-// Created by tobiasjanca on 10/13/24.
-//
-
 #ifndef SCENE_H
 #define SCENE_H
 
@@ -11,6 +7,7 @@
 #include "matrix.h"
 #include "model.h"
 #include "shaders.h"
+#include "camera.h"
 #include "tree.h"
 #include "bushes.h"
 
@@ -18,60 +15,45 @@
 
 class Scene {
 public:
-    virtual ~Scene() = default;
+    explicit Scene(GLFWwindow *window);
 
-    virtual void render() = 0;
+    virtual ~Scene();
 
-    virtual void cleanup() = 0;
+    virtual void render();
 
-    virtual void init() = 0;
+    virtual void cleanup();
+
+    virtual void init();
+
+    void add_model(Model *model);
+
+    Camera *camera;
 
 protected:
-    bool run = false;
+    GLFWwindow *window;
+    std::vector<Model *> models;
+    std::vector<Matrix *> matrices;
+    VertexShader *vertex_shader_matrix;
+    FragmentShader *fragment_shader_matrix;
+    ShaderProgram *shader_program_matrix;
 };
 
 class ForestScene final : public Scene {
 public:
     explicit ForestScene(GLFWwindow *window);
 
-    ~ForestScene() override;
-
-    void cleanup() override;
+    ~ForestScene() override = default;
 
     void init() override;
-
-    void render() override;
-
-private:
-    std::vector<Matrix *> tree_matrices;
-    GLFWwindow *window;
-    VertexShader *vertex_shader_matrix;
-    FragmentShader *fragment_shader_matrix;
-    ShaderProgram *shader_program_matrix;
-    Model *tree_model;
 };
-
 
 class BushesScene final : public Scene {
 public:
     explicit BushesScene(GLFWwindow *window);
 
-    ~BushesScene();
-
-    void cleanup() override;
+    ~BushesScene() override = default;
 
     void init() override;
-
-    void render() override;
-
-private:
-    std::vector<Matrix *> bush_matrices;
-    GLFWwindow *window;
-    VertexShader *vertex_shader_matrix;
-    FragmentShader *fragment_shader_matrix;
-    ShaderProgram *shader_program_matrix;
-    Model *bush_model;
 };
-
 
 #endif //SCENE_H

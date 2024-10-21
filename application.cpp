@@ -33,7 +33,7 @@ static void error_callback(int error, const char *description) { fputs(descripti
 //     if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);
 // }
 
-void Application::init() {
+void Application::init()     {
     glfwSetErrorCallback(error_callback);
     if (!glfwInit()) {
         fprintf(stderr, "ERROR: could not start GLFW3\n");
@@ -58,9 +58,11 @@ void Application::init() {
     glViewport(0, 0, width, height);
 
     glEnable(GL_DEPTH_TEST);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Application::start() const {
+
     auto *scene_manager = new SceneManager(window);
     auto *forest_scene = new ForestScene(window);
     auto *bushes_scene = new BushesScene(window);
