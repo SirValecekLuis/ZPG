@@ -51,7 +51,7 @@ public:
 
     void update_camera_vectors();
 
-    glm::vec3 get_camera_pos() const;
+    [[nodiscard]] glm::vec3 get_camera_pos() const;
 
 private:
     glm::vec3 position;

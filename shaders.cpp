@@ -4,41 +4,8 @@
 
 #include "shaders.h"
 
-
-Shader::~Shader() {
-    if (shader_id != 0) {
-        glDeleteShader(shader_id);
-    }
-}
-
-VertexShader::VertexShader(const char *shader_string) {
-    shader_id = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(shader_id, 1, &shader_string, nullptr);
-    glCompileShader(shader_id);
-
-    GLint status;
-    glGetShaderiv(shader_id, GL_COMPILE_STATUS, &status);
-    if (status == GL_FALSE) {
-        GLint infoLogLength;
-        glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &infoLogLength);
-        auto *strInfoLog = new GLchar[infoLogLength + 1];
-        glGetShaderInfoLog(shader_id, infoLogLength, nullptr, strInfoLog);
-        fprintf(stderr, "Shader compilation failed: %s\n", strInfoLog);
-        delete[] strInfoLog;
-    }
-}
-
-FragmentShader::FragmentShader(const char *shader_string) {
-    shader_id = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(shader_id, 1, &shader_string, nullptr);
-    glCompileShader(shader_id);
-}
-
-ShaderProgram::ShaderProgram(const VertexShader &vertex, const FragmentShader &fragment) {
-    shader_id = glCreateProgram();
-    glAttachShader(shader_id, vertex.shader_id);
-    glAttachShader(shader_id, fragment.shader_id);
-    glLinkProgram(shader_id);
+ShaderProgram::ShaderProgram(const char *vertex_file, const char *fragment_file) {
+    shader_id = shader_loader.loadShader(vertex_file, fragment_file);
 
     GLint status;
     glGetProgramiv(shader_id, GL_LINK_STATUS, &status);
@@ -47,7 +14,7 @@ ShaderProgram::ShaderProgram(const VertexShader &vertex, const FragmentShader &f
         glGetProgramiv(shader_id, GL_INFO_LOG_LENGTH, &infoLogLength);
         auto *strInfoLog = new GLchar[infoLogLength + 1];
         glGetProgramInfoLog(shader_id, infoLogLength, nullptr, strInfoLog);
-        fprintf(stderr, "Linker failure: %s\n", strInfoLog);
+        fprintf(stderr, "Shader Program linker failure: %s\n", strInfoLog);
         delete[] strInfoLog;
     }
 }
@@ -56,45 +23,17 @@ ShaderProgram::~ShaderProgram() {
     glDeleteProgram(shader_id);
 }
 
-
-void ShaderProgram::change_fragment_shader(const VertexShader &fragment) const {
-    glAttachShader(shader_id, fragment.shader_id);
-    glLinkProgram(shader_id);
-}
-
-void ShaderProgram::change_vertex_shader(const VertexShader &vertex) const {
-    glAttachShader(shader_id, vertex.shader_id);
-    glLinkProgram(shader_id);
-}
-
 void ShaderProgram::use_shader() const {
     glUseProgram(shader_id);
-
-    if (model_matrix_id != -1) {
-        glUniformMatrix4fv(model_matrix_id, 1, GL_FALSE, &model_mat[0][0]);
-    }
-
-    // if (view_matrix_id != -1) {
-    //     glUniformMatrix4fv(view_matrix_id, 1, GL_FALSE, &view_mat[0][0]);
-    // }
-    //
-    // if (projection_matrix_id != -1) {
-    //     glUniformMatrix4fv(projection_matrix_id, 1, GL_FALSE, &projection_mat[0][0]);
-    // }
-    //
-    // if (normal_matrix_id != -1) {
-    //     glUniformMatrix3fv(projection_matrix_id, 1, GL_FALSE, &normal_matrix[0][0]);
-    // }
 }
-
 
 void ShaderProgram::set_model_mat(const Matrix &matrix) {
     model_mat = matrix.mat;
 
     model_matrix_id = glGetUniformLocation(shader_id, "modelMatrix");
 
-    if (model_matrix_id == -1) {
-        std::cerr << "Can't find a var 'modelMatrix'" << std::endl;
+    if (model_matrix_id != -1) {
+        glUniformMatrix4fv(model_matrix_id, 1, GL_FALSE, &model_mat[0][0]);
     }
 }
 
@@ -131,7 +70,7 @@ void ShaderProgram::set_normal_matrix() {
     }
 }
 
-void ShaderProgram::set_camera_position(const glm::vec3& pos) const {
+void ShaderProgram::set_camera_position(const glm::vec3 &pos) const {
     if (const GLint camera_pos_id = glGetUniformLocation(shader_id, "viewPosition"); camera_pos_id != -1) {
         glUniform3fv(camera_pos_id, 1, &pos[0]);
     }

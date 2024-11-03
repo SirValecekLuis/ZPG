@@ -4,17 +4,21 @@
 
 #include "camera.h"
 
+#include <cstdio>
 #include <bits/stl_algo.h>
 
 Camera::Camera(glm::vec3 position, float pitch, glm::vec3 up, float yaw)
     : position(position),
-      front(glm::vec3(0.0f, -1.0f, 0.0f)),
       world_up(up),
       yaw(yaw),
       pitch(pitch),
       movement_speed(5.0f),
       mouse_sensitivity(0.1f),
-      zoom(60.0f) {
+      zoom(60.0f)
+{
+    front = glm::vec3(0.0f, 0.0f, -1.0f);
+    right = glm::vec3(1.0f, 0.0f, 0.0f);
+
     update_camera_vectors();
 }
 
@@ -48,7 +52,13 @@ void Camera::update_camera_vectors() {
     newFront.y = sin(glm::radians(pitch));
     newFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     front = glm::normalize(newFront);
+
     right = glm::normalize(glm::cross(front, world_up));
+
+    if (glm::length(right) < 0.001f) {
+        right = glm::vec3(1.0f, 0.0f, 0.0f);
+    }
+
     up = glm::normalize(glm::cross(right, front));
 }
 
@@ -67,7 +77,7 @@ void Camera::notify_observers() {
 }
 
 void Camera::process_keyboard(const CameraMovement direction, const float delta_time) {
-    float velocity = movement_speed * delta_time;
+    const float velocity = movement_speed * delta_time;
     if (direction == FORWARD)
         position += front * velocity;
     if (direction == BACKWARD)

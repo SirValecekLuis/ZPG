@@ -40,8 +40,10 @@ void Application::start() const {
     auto *basic_scene = new BasicScene(window);
     auto *forest_scene = new ForestScene(window);
     auto *phong_scene = new PhongScene(window);
+    auto *all_lights_scene = new AllLightsScene(window);
 
     scene_manager->add_scene("basic", basic_scene);
+    scene_manager->add_scene("all_lights", all_lights_scene);
     scene_manager->add_scene("phong", phong_scene);
     scene_manager->add_scene("forest", forest_scene);
 

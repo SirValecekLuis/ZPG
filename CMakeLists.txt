@@ -25,7 +25,9 @@ add_executable(ZPG
         scene_manager.h
         camera.h
         camera.cpp
-        observer.h)
+        observer.h
+        shader_loader.cpp
+        shader_loader.h)
 
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(ZPG PRIVATE glfw)

@@ -4,7 +4,7 @@
 
 #include "model.h"
 
-Model::Model(const float *data, const GLsizeiptr size, ShaderProgram &shader) : shader(shader) {
+Model::Model(const float *data, const GLsizeiptr size) {
     this->data = data;
     this->size = size;
 
@@ -23,7 +23,6 @@ void Model::create_arrays() {
 }
 
 void Model::draw() const {
-    shader.use_shader();
     vao->bind_vao();
 
     glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(size)); //mode,first,count

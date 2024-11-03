@@ -1,60 +1,26 @@
-//
-// Created by tobiasjanca on 10/2/24.
-//
-
 #ifndef SHADERS_H
 #define SHADERS_H
-
-#include <cstdio>
-#include <iostream>
 
 #include <GL/glew.h>
 #include <glm/fwd.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
+#include <string>
 #include "matrix.h"
 #include "camera.h"
 #include "observer.h"
-
-class Shader {
-public:
-    virtual ~Shader();
-
-    GLuint shader_id = 0;
-};
-
-class VertexShader final : public Shader {
-public:
-    explicit VertexShader(const char *shader_string);
-};
-
-class FragmentShader final : public Shader {
-public:
-    explicit FragmentShader(const char *shader_string);
-};
+#include "shader_loader.h"  // Zahrnutí ShaderLoaderu
 
 class ShaderProgram final : public Observer {
 public:
-    ShaderProgram(const VertexShader &vertex, const FragmentShader &fragment);
-
+    ShaderProgram(const char *vertex_file, const char *fragment_file);
     ~ShaderProgram() override;
 
     void use_shader() const;
-
-    void change_vertex_shader(const VertexShader &vertex) const;
-
-    void change_fragment_shader(const VertexShader &fragment) const;
-
     void set_model_mat(const Matrix &matrix);
-
     void set_view_matrix(const glm::mat4& view);
-
     void set_projection_matrix(const glm::mat4& projection);
-
     void set_normal_matrix();
-
     void set_camera_position(const glm::vec3& pos) const;
-
     void update(Subject* subject) override;
 
 private:
@@ -69,6 +35,7 @@ private:
     glm::mat4 projection_mat{};
     glm::mat3 normal_matrix{};
 
+    ShaderLoader shader_loader;
 };
 
-#endif //SHADERS_H
+#endif // SHADERS_H
