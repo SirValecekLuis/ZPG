@@ -6,7 +6,7 @@
 
 #include <bits/stl_algo.h>
 
-Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
+Camera::Camera(glm::vec3 position, float pitch, glm::vec3 up, float yaw)
     : position(position),
       front(glm::vec3(0.0f, -1.0f, 0.0f)),
       world_up(up),
@@ -96,4 +96,8 @@ void Camera::process_mouse_movement(float offset_x, float offset_y, const GLbool
 
     update_camera_vectors();
     notify_observers();
+}
+
+glm::vec3 Camera::get_camera_pos() const {
+    return position;
 }

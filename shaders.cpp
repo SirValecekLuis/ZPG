@@ -15,6 +15,17 @@ VertexShader::VertexShader(const char *shader_string) {
     shader_id = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(shader_id, 1, &shader_string, nullptr);
     glCompileShader(shader_id);
+
+    GLint status;
+    glGetShaderiv(shader_id, GL_COMPILE_STATUS, &status);
+    if (status == GL_FALSE) {
+        GLint infoLogLength;
+        glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &infoLogLength);
+        auto *strInfoLog = new GLchar[infoLogLength + 1];
+        glGetShaderInfoLog(shader_id, infoLogLength, nullptr, strInfoLog);
+        fprintf(stderr, "Shader compilation failed: %s\n", strInfoLog);
+        delete[] strInfoLog;
+    }
 }
 
 FragmentShader::FragmentShader(const char *shader_string) {
@@ -62,12 +73,18 @@ void ShaderProgram::use_shader() const {
     if (model_matrix_id != -1) {
         glUniformMatrix4fv(model_matrix_id, 1, GL_FALSE, &model_mat[0][0]);
     }
-    if (view_matrix_id != -1) {
-        glUniformMatrix4fv(view_matrix_id, 1, GL_FALSE, &view_mat[0][0]);
-    }
-    if (projection_matrix_id != -1) {
-        glUniformMatrix4fv(projection_matrix_id, 1, GL_FALSE, &projection_mat[0][0]);
-    }
+
+    // if (view_matrix_id != -1) {
+    //     glUniformMatrix4fv(view_matrix_id, 1, GL_FALSE, &view_mat[0][0]);
+    // }
+    //
+    // if (projection_matrix_id != -1) {
+    //     glUniformMatrix4fv(projection_matrix_id, 1, GL_FALSE, &projection_mat[0][0]);
+    // }
+    //
+    // if (normal_matrix_id != -1) {
+    //     glUniformMatrix3fv(projection_matrix_id, 1, GL_FALSE, &normal_matrix[0][0]);
+    // }
 }
 
 
@@ -103,9 +120,27 @@ void ShaderProgram::set_projection_matrix(const glm::mat4 &projection) {
     }
 }
 
+
+void ShaderProgram::set_normal_matrix() {
+    normal_matrix = glm::transpose(glm::inverse(glm::mat3(model_mat)));
+
+    normal_matrix_id = glGetUniformLocation(shader_id, "normalMatrix");
+
+    if (normal_matrix_id != -1) {
+        glUniformMatrix3fv(normal_matrix_id, 1, GL_FALSE, &normal_matrix[0][0]);
+    }
+}
+
+void ShaderProgram::set_camera_position(const glm::vec3& pos) const {
+    if (const GLint camera_pos_id = glGetUniformLocation(shader_id, "viewPosition"); camera_pos_id != -1) {
+        glUniform3fv(camera_pos_id, 1, &pos[0]);
+    }
+}
+
 void ShaderProgram::update(Subject *subject) {
     if (const auto *camera = dynamic_cast<Camera *>(subject)) {
         set_view_matrix(camera->get_view_matrix());
         set_projection_matrix(camera->get_projection_matrix());
+        set_camera_position(camera->get_camera_pos());
     }
 }

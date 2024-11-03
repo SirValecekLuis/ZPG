@@ -6,4 +6,6 @@ int main() {
 
     app->init();
     app->start();
+
+    delete app;
 }

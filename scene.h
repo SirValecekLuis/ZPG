@@ -12,6 +12,7 @@
 #include "tree.h"
 #include "bushes.h"
 #include "plain.h"
+#include "sphere.h"
 
 #include <GLFW/glfw3.h>
 
@@ -23,7 +24,7 @@ public:
     virtual void render();
     virtual void cleanup();
     virtual void init();
-    virtual void init_camera();
+    void init_camera(glm::vec3 position = glm::vec3(0.0f, 10.0f, 0.0f), float pitch = -90.f);
 
     void add_model(Model *model, const std::vector<Matrix*>& model_matrices);
     void add_model(Model *model, Matrix* matrix);
@@ -51,6 +52,16 @@ public:
     explicit BasicScene(GLFWwindow *window);
 
     ~BasicScene() override = default;
+
+    void init() override;
+};
+
+class PhongScene final : public Scene {
+    public:
+
+    explicit PhongScene(GLFWwindow *window);
+
+    ~PhongScene() override = default;
 
     void init() override;
 };
