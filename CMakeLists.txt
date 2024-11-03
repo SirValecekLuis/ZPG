@@ -25,7 +25,6 @@ add_executable(ZPG
         scene_manager.h
         camera.h
         camera.cpp
-        observer.cpp
         observer.h)
 
 find_package(glfw3 CONFIG REQUIRED)

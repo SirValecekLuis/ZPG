@@ -41,12 +41,6 @@ ShaderProgram::ShaderProgram(const VertexShader &vertex, const FragmentShader &f
     }
 }
 
-
-ShaderProgram::ShaderProgram(const VertexShader &vertex, const FragmentShader &fragment,
-                             const Matrix &matrix) : ShaderProgram(vertex, fragment) {
-    set_model_mat(matrix);
-}
-
 ShaderProgram::~ShaderProgram() {
     glDeleteProgram(shader_id);
 }

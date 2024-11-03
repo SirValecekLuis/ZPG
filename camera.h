@@ -25,13 +25,15 @@ enum CameraMovement {
 
 class Camera final : public Subject {
 public:
-    explicit Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f),
-                    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
-                    float yaw = -90.0f, float pitch = 0.0f);
+    explicit Camera(glm::vec3 position = glm::vec3(0.0f, 10.0f, 0.0f),
+                   glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
+                   float yaw = -90.0f,
+                   float pitch = -90.0f);
 
-    glm::mat4 get_view_matrix() const;
 
-    glm::mat4 get_projection_matrix() const;
+    [[nodiscard]] glm::mat4 get_view_matrix() const;
+
+    [[nodiscard]] glm::mat4 get_projection_matrix() const;
 
     void move(const glm::vec3 &offset);
 
@@ -43,9 +45,9 @@ public:
 
     void notify_observers() override;
 
-    void process_keyboard(CameraMovement direction, float deltaTime);
+    void process_keyboard(CameraMovement direction, float delta_time);
 
-    void process_mouse_movement(float xoffset, float yoffset, GLboolean constrainPitch = true);
+    void process_mouse_movement(float offset_x, float offset_y, GLboolean constrain_pitch = true);
 
     void update_camera_vectors();
 

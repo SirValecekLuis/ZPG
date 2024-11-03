@@ -11,7 +11,8 @@
 
 class Matrix {
 public:
-    Matrix(float rotate_x, float rotate_y, float translate_x, float translate_y, float translate_z, float scale);
+    explicit Matrix(float rotate_x = 0, float rotate_y = 0, float translate_x = 0, float translate_y = 0, float translate_z = 0,
+           float scale = 1);
 
     glm::mat4 mat{};
 };

@@ -2,6 +2,7 @@
 #define SCENE_H
 
 #include <vector>
+#include <map>
 #include <random>
 
 #include "matrix.h"
@@ -10,34 +11,32 @@
 #include "camera.h"
 #include "tree.h"
 #include "bushes.h"
+#include "plain.h"
 
 #include <GLFW/glfw3.h>
 
 class Scene {
 public:
     explicit Scene(GLFWwindow *window);
-
     virtual ~Scene();
 
     virtual void render();
-
     virtual void cleanup();
-
     virtual void init();
+    virtual void init_camera();
 
-    void add_model(Model *model);
+    void add_model(Model *model, const std::vector<Matrix*>& model_matrices);
+    void add_model(Model *model, Matrix* matrix);
 
     Camera *camera;
 
 protected:
     GLFWwindow *window;
-    std::vector<Model *> models;
-    std::vector<Matrix *> matrices;
-    VertexShader *vertex_shader_matrix;
-    FragmentShader *fragment_shader_matrix;
-    ShaderProgram *shader_program_matrix;
+    std::map<Model*, std::vector<Matrix*>> model_matrices_map;
+    VertexShader *vertex_shader;
+    FragmentShader *fragment_shader;
+    ShaderProgram *shader_program;
 };
-
 class ForestScene final : public Scene {
 public:
     explicit ForestScene(GLFWwindow *window);
@@ -47,11 +46,11 @@ public:
     void init() override;
 };
 
-class BushesScene final : public Scene {
+class BasicScene final : public Scene {
 public:
-    explicit BushesScene(GLFWwindow *window);
+    explicit BasicScene(GLFWwindow *window);
 
-    ~BushesScene() override = default;
+    ~BasicScene() override = default;
 
     void init() override;
 };

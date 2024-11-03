@@ -4,8 +4,8 @@
 #include <thread>
 
 
-float lastX = 400, lastY = 300;
-bool firstMouse = true;
+float last_x = 400, last_y = 300;
+bool first_mouse = true;
 Camera* camera;
 
 SceneManager::SceneManager(GLFWwindow *window) : window(window) {
@@ -58,33 +58,33 @@ void SceneManager::render_current_scene() {
 void SceneManager::run() {
     constexpr int TARGET_FPS = 60;
     const std::chrono::duration<double> TARGET_FRAMETIME(1.0 / TARGET_FPS);
-    float deltaTime = 0.0f;
-    float lastFrame = 0.0f;
+    float delta_time = 0.0f;
+    float last_frame = 0.0f;
 
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         auto frameStart = std::chrono::high_resolution_clock::now();
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+        float current_frame = glfwGetTime();
+        delta_time = current_frame - last_frame;
+        last_frame = current_frame;
 
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) camera->process_keyboard(FORWARD, deltaTime);
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) camera->process_keyboard(BACKWARD, deltaTime);
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) camera->process_keyboard(LEFT, deltaTime);
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) camera->process_keyboard(RIGHT, deltaTime);
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) camera->process_keyboard(FORWARD, delta_time);
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) camera->process_keyboard(BACKWARD, delta_time);
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) camera->process_keyboard(LEFT, delta_time);
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) camera->process_keyboard(RIGHT, delta_time);
 
         render_current_scene();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-        auto frameEnd = std::chrono::high_resolution_clock::now();
-        auto frameDuration = std::chrono::duration_cast<std::chrono::duration<double> >(frameEnd - frameStart);
+        auto frame_end = std::chrono::high_resolution_clock::now();
+        auto frame_duration = std::chrono::duration_cast<std::chrono::duration<double> >(frame_end - frameStart);
 
-        if (frameDuration < TARGET_FRAMETIME) {
-            std::this_thread::sleep_for(TARGET_FRAMETIME - frameDuration);
+        if (frame_duration < TARGET_FRAMETIME) {
+            std::this_thread::sleep_for(TARGET_FRAMETIME - frame_duration);
         }
     }
 }
@@ -100,17 +100,17 @@ void SceneManager::mouse_callback(GLFWwindow *window, double xpos, double ypos) 
     float xpos_f = static_cast<float>(xpos);
     float ypos_f = static_cast<float>(ypos);
 
-    if (firstMouse) {
-        lastX = xpos_f;
-        lastY = ypos_f;
-        firstMouse = false;
+    if (first_mouse) {
+        last_x = xpos_f;
+        last_y = ypos_f;
+        first_mouse = false;
     }
 
-    float xoffset = xpos_f - lastX;
-    float yoffset = lastY - ypos;
+    float xoffset = xpos_f - last_x;
+    float yoffset = last_y - ypos;
 
-    lastX = xpos_f;
-    lastY = ypos_f;
+    last_x = xpos_f;
+    last_y = ypos_f;
 
     camera->process_mouse_movement(xoffset, yoffset);
 }

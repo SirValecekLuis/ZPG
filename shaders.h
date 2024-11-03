@@ -37,9 +37,7 @@ class ShaderProgram : public Observer {
 public:
     ShaderProgram(const VertexShader &vertex, const FragmentShader &fragment);
 
-    ShaderProgram(const VertexShader &vertex, const FragmentShader &fragment, const Matrix &matrix);
-
-    ~ShaderProgram();
+    ~ShaderProgram() override;
 
     void use_shader() const;
 
