@@ -17,6 +17,7 @@ public:
     ~Model();
 
     void draw() const;
+    void bind_vao() const;
 
 private:
     const float *data;

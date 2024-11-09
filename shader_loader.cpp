@@ -92,4 +92,5 @@ ShaderLoader::ShaderLoader() {
 
 
 ShaderLoader::~ShaderLoader() {
+    deleteShader();
 }

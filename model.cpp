@@ -22,8 +22,10 @@ void Model::create_arrays() {
     vao = new VAO(*vbo);
 }
 
-void Model::draw() const {
+void Model::bind_vao() const {
     vao->bind_vao();
+}
 
+void Model::draw() const {
     glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(size)); //mode,first,count
 }

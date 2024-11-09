@@ -22,6 +22,7 @@ public:
     void set_normal_matrix();
     void set_camera_position(const glm::vec3& pos) const;
     void update(Subject* subject) override;
+    void update_all_matrices();
 
 private:
     GLuint shader_id = 0;
