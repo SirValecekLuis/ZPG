@@ -22,6 +22,7 @@ ShaderProgram::ShaderProgram(const char *vertex_file, const char *fragment_file)
     model_matrix_id = glGetUniformLocation(shader_id, "modelMatrix");
     projection_matrix_id = glGetUniformLocation(shader_id, "projectionMatrix");
     normal_matrix_id = glGetUniformLocation(shader_id, "normalMatrix");
+    camera_pos_id = glGetUniformLocation(shader_id, "viewPosition");
 }
 
 ShaderProgram::~ShaderProgram() {
@@ -51,12 +52,8 @@ void ShaderProgram::set_normal_matrix() {
     normal_matrix = glm::transpose(glm::inverse(glm::mat3(model_mat)));
 }
 
-void ShaderProgram::set_camera_position(const glm::vec3 &pos) const {
-    if (const GLint camera_pos_id = glGetUniformLocation(shader_id, "viewPosition"); camera_pos_id != -1) {
-        glUniform3fv(camera_pos_id, 1, &pos[0]);
-    } else {
-        fprintf(stderr, "Error: Failed to get uniform location for camera position.\n");
-    }
+void ShaderProgram::set_camera_position(const glm::vec3 &pos) {
+    camera_pos = pos;
 }
 
 void ShaderProgram::update_all_matrices() {
@@ -71,6 +68,10 @@ void ShaderProgram::update_all_matrices() {
     }
     if (normal_matrix_id != -1) {
         glUniformMatrix3fv(normal_matrix_id, 1, GL_FALSE, &normal_matrix[0][0]);
+    }
+
+    if (camera_pos_id != -1) {
+        glUniform3fv(camera_pos_id, 1, &camera_pos[0]);
     }
 }
 

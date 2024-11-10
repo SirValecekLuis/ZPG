@@ -1,27 +1,30 @@
 #version 330 core
 
-out vec4 FragColor;
+in vec4 ex_worldPosition;
+in vec3 ex_worldNormal;
 
-in vec3 FragPos;
-in vec3 Normal;
+out vec4 out_Color;
 
-uniform vec3 lightPos;
-uniform vec3 viewPos;
-uniform vec3 lightColor;
-uniform vec3 objectColor;
+uniform vec3 viewPosition;
 
 void main() {
-    vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(lightPos - FragPos);
+    vec3 lightPosition = vec3(0.0, 0.0, 0.0);
 
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * lightColor;
+    vec3 normal = normalize(ex_worldNormal);
+    vec3 lightVector = normalize(lightPosition - ex_worldPosition.xyz);
+    vec3 viewVector = normalize(viewPosition - ex_worldPosition.xyz);
 
-    vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(norm, halfwayDir), 0.0), 32.0);
-    vec3 specular = spec * lightColor;
+    vec3 halfwayVector = normalize(lightVector + viewVector);
 
-    vec3 result = (diffuse + specular) * objectColor;
-    FragColor = vec4(result, 1.0);
+    float shininess = 64.0;
+    vec4 specularColor = vec4(1.0, 1.0, 1.0, 1.0);
+
+    float dot_product = max(dot(lightVector, normal), 0.0);
+    float spec = pow(max(dot(normal, halfwayVector), 0.0), shininess);
+
+    vec4 ambient = vec4(0.1, 0.1, 0.1, 1.0);
+    vec4 diffuse = dot_product * vec4(0.385, 0.647, 0.812, 1.0);
+    vec4 specular = spec * specularColor;
+
+    out_Color = ambient + diffuse + specular;
 }
