@@ -53,11 +53,13 @@ public:
 
     [[nodiscard]] glm::vec3 get_camera_pos() const;
 
+    [[nodiscard]] glm::vec3 get_front() const;
+
 private:
     glm::vec3 position;
-    glm::vec3 front;
-    glm::vec3 up;
-    glm::vec3 right;
+    glm::vec3 front{};
+    glm::vec3 up{};
+    glm::vec3 right{};
     glm::vec3 world_up;
 
     float yaw;

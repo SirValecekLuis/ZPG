@@ -111,3 +111,7 @@ void Camera::process_mouse_movement(float offset_x, float offset_y, const GLbool
 glm::vec3 Camera::get_camera_pos() const {
     return position;
 }
+
+glm::vec3 Camera::get_front() const {
+    return front;
+}

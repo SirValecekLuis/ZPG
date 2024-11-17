@@ -14,6 +14,8 @@
 #include "sphere.h"
 #include <GLFW/glfw3.h>
 
+#include "flashlight.h"
+
 class DrawableObject {
 public:
     Model *model;
@@ -48,6 +50,8 @@ public:
 
     Camera *camera;
 
+    FlashLight *flash_light;
+
 protected:
     GLFWwindow *window;
     std::vector<DrawableObject *> render_objects;
@@ -62,6 +66,16 @@ public:
 
     void init() override;
 };
+
+class ForestSceneDark final : public Scene {
+public:
+    explicit ForestSceneDark(GLFWwindow *window);
+
+    ~ForestSceneDark() override = default;
+
+    void init() override;
+};
+
 
 class BasicScene final : public Scene {
 public:

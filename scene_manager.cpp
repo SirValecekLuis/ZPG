@@ -97,6 +97,11 @@ void SceneManager::key_callback(GLFWwindow *window, int key, int scancode, int a
 }
 
 void SceneManager::mouse_callback(GLFWwindow *window, double xpos, double ypos) {
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) != GLFW_PRESS) {
+        first_mouse = true;
+        return;
+    }
+
     float xpos_f = static_cast<float>(xpos);
     float ypos_f = static_cast<float>(ypos);
 
@@ -107,10 +112,11 @@ void SceneManager::mouse_callback(GLFWwindow *window, double xpos, double ypos) 
     }
 
     float xoffset = xpos_f - last_x;
-    float yoffset = last_y - ypos;
+    float yoffset = last_y - ypos_f;
 
     last_x = xpos_f;
     last_y = ypos_f;
 
     camera->process_mouse_movement(xoffset, yoffset);
 }
+

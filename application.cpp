@@ -31,7 +31,6 @@ void Application::init() {
     glViewport(0, 0, width, height);
 
     glEnable(GL_DEPTH_TEST);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Application::start() const {
@@ -39,6 +38,7 @@ void Application::start() const {
 
     auto *basic_scene = new BasicScene(window);
     auto *forest_scene = new ForestScene(window);
+    auto *dark_forest_scene = new ForestSceneDark(window);
     auto *phong_scene = new PhongScene(window);
     auto *all_lights_scene = new AllLightsScene(window);
 
@@ -46,6 +46,7 @@ void Application::start() const {
     scene_manager->add_scene("all_lights", all_lights_scene);
     scene_manager->add_scene("phong", phong_scene);
     scene_manager->add_scene("forest", forest_scene);
+    scene_manager->add_scene("dark_forest", dark_forest_scene);
 
     scene_manager->switch_scene("basic");
     scene_manager->run();

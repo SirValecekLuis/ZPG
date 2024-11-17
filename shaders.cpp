@@ -4,6 +4,8 @@
 
 #include "shaders.h"
 
+#include "material.h"
+
 ShaderProgram::ShaderProgram(const char *vertex_file, const char *fragment_file) {
     shader_id = shader_loader.loadShader(vertex_file, fragment_file);
 
@@ -23,14 +25,65 @@ ShaderProgram::ShaderProgram(const char *vertex_file, const char *fragment_file)
     projection_matrix_id = glGetUniformLocation(shader_id, "projectionMatrix");
     normal_matrix_id = glGetUniformLocation(shader_id, "normalMatrix");
     camera_pos_id = glGetUniformLocation(shader_id, "viewPosition");
+    light_count_id = glGetUniformLocation(shader_id, "light_count");
 }
 
 ShaderProgram::~ShaderProgram() {
     glDeleteProgram(shader_id);
+
+    // for (auto &light: lights) {
+    //     if (light != nullptr) {
+    //         delete light;
+    //         light = nullptr;
+    //     }
+    // }
+
+    lights.clear();
 }
 
 void ShaderProgram::use_shader() const {
     glUseProgram(shader_id);
+}
+
+void ShaderProgram::add_light(const LightType type, const glm::vec3 &position, const glm::vec3 &color, const float intensity) {
+    if (lights.size() < 10) {
+        auto *new_light = new Light(type, position, color, intensity);
+        lights.push_back(new_light);
+    }
+}
+
+void ShaderProgram::add_light(Light* light) {
+    if (lights.size() < 10) {
+        lights.push_back(light);
+    }
+}
+
+void ShaderProgram::update_lights() const {
+    glUniform1i(light_count_id, static_cast<GLint>(lights.size()));
+
+    for (size_t i = 0; i < lights.size(); ++i) {
+        std::string base = "lights[" + std::to_string(i) + "].";
+
+        glUniform1i(glGetUniformLocation(shader_id, (base + "type").c_str()),
+                   static_cast<GLint>(lights[i]->type));
+
+        glUniform3fv(glGetUniformLocation(shader_id, (base + "position").c_str()),
+                    1, &lights[i]->position[0]);
+
+        glUniform3fv(glGetUniformLocation(shader_id, (base + "direction").c_str()),
+                    1, &lights[i]->direction[0]);
+
+        glUniform3fv(glGetUniformLocation(shader_id, (base + "color").c_str()),
+                    1, &lights[i]->color[0]);
+
+        glUniform1f(glGetUniformLocation(shader_id, (base + "intensity").c_str()),
+                   lights[i]->intensity);
+
+        glUniform1f(glGetUniformLocation(shader_id, (base + "cutOff").c_str()),
+                   lights[i]->cutOff);
+        glUniform1f(glGetUniformLocation(shader_id, (base + "outerCutOff").c_str()),
+                   lights[i]->outerCutOff);
+    }
 }
 
 void ShaderProgram::set_model_mat(const Matrix &matrix) {
@@ -73,6 +126,8 @@ void ShaderProgram::update_all_matrices() {
     if (camera_pos_id != -1) {
         glUniform3fv(camera_pos_id, 1, &camera_pos[0]);
     }
+
+    update_lights();
 }
 
 void ShaderProgram::update(Subject *subject) {
@@ -81,4 +136,12 @@ void ShaderProgram::update(Subject *subject) {
         set_projection_matrix(camera->get_projection_matrix());
         set_camera_position(camera->get_camera_pos());
     }
+}
+
+void ShaderProgram::apply_material(Material& material) {
+    glUniform1f(glGetUniformLocation(shader_id, "material_ambient"), material.get_ra());
+    glUniform1f(glGetUniformLocation(shader_id, "material_diffuse"), material.get_rd());
+    glUniform1f(glGetUniformLocation(shader_id, "material_specular"), material.get_rs());
+    glUniform1f(glGetUniformLocation(shader_id, "material_shininess"), 64.0f);
+
 }

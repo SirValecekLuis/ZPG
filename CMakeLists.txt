@@ -27,7 +27,12 @@ add_executable(ZPG
         camera.cpp
         observer.h
         shader_loader.cpp
-        shader_loader.h)
+        shader_loader.h
+        light.h
+        material.h
+        flashlight.h
+        bushes.h
+)
 
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(ZPG PRIVATE glfw)
