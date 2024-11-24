@@ -42,3 +42,6 @@ target_link_libraries(ZPG PRIVATE glm::glm)
 
 find_package(glew CONFIG REQUIRED)
 target_link_libraries(ZPG PRIVATE GLEW::GLEW)
+
+find_package(soil CONFIG REQUIRED)
+target_link_libraries(ZPG PRIVATE soil)

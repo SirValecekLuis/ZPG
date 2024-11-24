@@ -1,11 +1,8 @@
-//
-// Created by tobiasjanca on 10/3/24.
-//
-
 #include "buffers.h"
 
-VBO::VBO(const void *data, const GLsizeiptr size) {
-    glGenBuffers(1, &vbo); // generate the VBO
+VBO::VBO(const void* data, GLsizeiptr size, GLsizei stride) 
+    : stride(stride) {
+    glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 }
@@ -14,14 +11,24 @@ VBO::~VBO() {
     glDeleteBuffers(1, &vbo);
 }
 
-VAO::VAO(const VBO &vbo) {
-    glGenVertexArrays(1, &vao); //generate the VAO
-    glBindVertexArray(vao); //bind the VAO
-    glEnableVertexAttribArray(0); //enable vertex attributes
-    glEnableVertexAttribArray(1); //enable vertex attributes
+VAO::VAO(const VBO& vbo, bool hasTexture) {
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, vbo.vbo);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), reinterpret_cast<GLvoid *>(3 * sizeof(float)));
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vbo.stride, nullptr);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, vbo.stride,
+                         reinterpret_cast<GLvoid*>(3 * sizeof(float)));
+}
+
+void VAO::add_texture_coords(const VBO& texCoordVBO) const {
+    glBindVertexArray(vao);
+    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, texCoordVBO.vbo);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 VAO::~VAO() {

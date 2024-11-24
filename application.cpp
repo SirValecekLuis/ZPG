@@ -41,10 +41,12 @@ void Application::start() const {
     auto *dark_forest_scene = new ForestSceneDark(window);
     auto *phong_scene = new PhongScene(window);
     auto *all_lights_scene = new AllLightsScene(window);
+    auto *forest_texture_scene = new TextureForestScene(window);
 
     scene_manager->add_scene("basic", basic_scene);
     scene_manager->add_scene("all_lights", all_lights_scene);
     scene_manager->add_scene("phong", phong_scene);
+    scene_manager->add_scene("texture_forest", forest_texture_scene);
     scene_manager->add_scene("forest", forest_scene);
     scene_manager->add_scene("dark_forest", dark_forest_scene);
 

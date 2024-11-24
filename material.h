@@ -5,7 +5,7 @@
 
 class Material {
 public:
-    explicit Material(const float ra = 0.1f, const float rd = 0.5f, const float rs = 0.4f)
+    explicit Material(const float ra = 0.1f, const float rd = 1.f, const float rs = 1.f)
         : ra(ra), rd(rd), rs(rs), randomEngine(std::random_device{}()) {}
 
     void set_coefficients(const float ra, const float rd, const float rs) {

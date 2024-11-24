@@ -52,6 +52,15 @@ void Scene::render() {
     for (const auto &drawable_object: render_objects) {
         drawable_object->shader_program->use_shader();
 
+        if (drawable_object->model->hasTexture) {
+            drawable_object->model->bind_texture();
+            drawable_object->shader_program->set_use_texture(true);
+        } else {
+            drawable_object->shader_program->set_use_texture(false);
+        }
+
+        drawable_object->shader_program->bind_texture_uniforms(0);
+
         if (const GLenum err = glGetError(); err != GL_NO_ERROR) {
             fprintf(stderr, "Error: Failed to use shader program. E: %u and str: %s\n", err, gluErrorString(err));
         }
@@ -119,7 +128,7 @@ void ForestScene::init() {
 
     for (int i = 0; i < 8 * 8; i++) {
         auto *tree_model = new Model(tree, sizeof(tree));
-        auto* object = new DrawableObject(tree_model, tree_matrices[i], tree_shader);
+        auto *object = new DrawableObject(tree_model, tree_matrices[i], tree_shader);
         object->model->randomize_material();
         add_render_object(object);
     }
@@ -154,8 +163,19 @@ BasicScene::BasicScene(GLFWwindow *window) : Scene(window) {
 }
 
 void BasicScene::init() {
+    const float plain_tex_coords[] = {
+        0.0f, 0.0f,
+        5.0f, 0.0f,
+        0.0f, 5.0f,
+
+        5.0f, 0.0f,
+        5.0f, 5.0f,
+        0.0f, 5.0f
+    };
+
     auto *basic_shader = new ShaderProgram("../2d.vs", "../2d.fs");
     shader_programs.push_back(basic_shader);
+    basic_shader->set_use_texture(true);
 
     init_camera(glm::vec3(0.0, 5.0, 0.0), 30);
 
@@ -164,7 +184,8 @@ void BasicScene::init() {
         0.5f, -0.5f, 0.0f, 0.f, 1.f, 0.f,
         -0.5f, -0.5f, 0.0f, 0.f, 1.f, 0.f,
     };
-    auto *triangle = new Model(triangle_data, sizeof(triangle_data));
+    auto *triangle = new Model(triangle_data, sizeof(triangle_data), plain_tex_coords, sizeof(plain_tex_coords),
+                               "../wooden_fence.png");
     add_render_object(new DrawableObject(triangle, {new Matrix()}, basic_shader));
 }
 
@@ -215,4 +236,45 @@ void AllLightsScene::init() {
     add_render_object(new DrawableObject(sphere_model, matrices[1], shader_programs[1]));
     add_render_object(new DrawableObject(sphere_model, matrices[2], shader_programs[2]));
     add_render_object(new DrawableObject(sphere_model, matrices[3], shader_programs[3]));
+}
+
+TextureForestScene::TextureForestScene(GLFWwindow *window) : Scene(window) {
+}
+
+void TextureForestScene::init() {
+    auto *tree_shader = new ShaderProgram("../light.vs", "../phong.fs");
+    shader_programs.push_back(tree_shader);
+    init_camera();
+    tree_shader->add_light(LightType::DIRECTIONAL, glm::vec3(0.0, 3.0, 0.0), glm::vec3(1, 1, 1), 0.5);
+
+    const float plain_tex_coords[] = {
+        0.0f, 0.0f,
+        5.0f, 0.0f,
+        0.0f, 5.0f,
+
+        5.0f, 0.0f,
+        5.0f, 5.0f,
+        0.0f, 5.0f
+    };
+
+    auto *bush_model = new Model(bushes, sizeof(bushes));
+    auto *plain_model = new Model(
+        plain, sizeof(plain),
+        plain_tex_coords, sizeof(plain_tex_coords),
+        "../grass.png");
+
+    const auto tree_matrices = generate_grid_matrices(8, 0.4, 4);
+    const auto bush_matrices = generate_grid_matrices(18, 0.7, 1.5);
+
+    for (int i = 0; i < 8 * 8; i++) {
+        auto *tree_model = new Model(tree, sizeof(tree));
+        auto *object = new DrawableObject(tree_model, tree_matrices[i], tree_shader);
+        object->model->randomize_material();
+        add_render_object(object);
+    }
+
+    add_render_object(new DrawableObject(bush_model, bush_matrices, tree_shader));
+    add_render_object(new DrawableObject(plain_model, new Matrix(0, 0, 0, 0, 0, 20), tree_shader));
+
+    tree_shader->set_use_texture(true);
 }

@@ -2,10 +2,13 @@
 
 in vec4 ex_worldPosition;
 in vec3 ex_worldNormal;
+in vec2 ex_TexCoord;
 
 out vec4 out_Color;
 
 uniform vec3 viewPosition;
+uniform sampler2D textureSampler;
+uniform bool useTexture;
 
 // Struktura pro světlo
 struct Light {
@@ -99,9 +102,14 @@ void main() {
     vec3 normal = normalize(ex_worldNormal);
     vec3 viewDir = normalize(viewPosition - ex_worldPosition.xyz);
 
-    vec4 baseColor = vec4(0.385, 0.647, 0.812, 1.0);
-    vec4 finalColor = vec4(0.0);  // Počáteční barva (čistě černá)
+    vec4 baseColor;
+    if (useTexture) {
+        baseColor = texture(textureSampler, ex_TexCoord);
+    } else {
+        baseColor = vec4(0.385, 0.647, 0.812, 1.0);
+    }
 
+    vec4 finalColor = vec4(0.0);
     for (int i = 0; i < light_count; ++i) {
         if (lights[i].type == 0) {  // Point light
             finalColor += calculatePointLight(lights[i], normal, viewDir, baseColor);

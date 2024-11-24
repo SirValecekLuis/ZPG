@@ -42,7 +42,11 @@ public:
 
     void update_lights() const;
 
-    void apply_material(Material& material);
+    void apply_material(const Material& material) const;
+
+    void bind_texture_uniforms(GLuint textureUnit = 0) const;
+
+    void set_use_texture(bool use_texture);
 
 private:
     GLuint shader_id;
@@ -52,6 +56,9 @@ private:
     GLint normal_matrix_id;
     GLint camera_pos_id;
     GLint light_count_id;
+    GLint texture_sampler_id;
+    GLint use_texture_id;
+    bool is_using_texture = false;
 
     std::vector<Light *> lights;
     glm::mat4 model_mat{};

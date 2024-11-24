@@ -102,4 +102,12 @@ public:
     void init() override;
 };
 
+
+class TextureForestScene final : public Scene {
+public:
+    explicit TextureForestScene(GLFWwindow *window);
+
+    void init() override;
+};
+
 #endif //SCENE_H
