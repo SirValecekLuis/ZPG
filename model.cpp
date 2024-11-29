@@ -1,8 +1,8 @@
 #include "model.h"
 
-Model::Model(const float *data, const GLsizeiptr size)
+Model::Model(const float *data, const GLsizeiptr size, const GLsizei stride)
     : data(data), size(size) {
-    create_arrays();
+    create_arrays(stride);
 }
 
 Model::~Model() {
@@ -15,8 +15,8 @@ Model::~Model() {
     }
 }
 
-void Model::create_arrays() {
-    vbo = new VBO(data, size);
+void Model::create_arrays(const GLsizei stride) {
+    vbo = new VBO(data, size, stride);
     vao = new VAO(*vbo);
 }
 
@@ -42,11 +42,10 @@ Material &Model::get_material() {
 
 Model::Model(const float *vertices, const GLsizeiptr vertSize,
              const float *texCoords, const GLsizeiptr texSize,
-             const char *texturePath)
+             const char *texturePath, const GLsizei stride)
     : data(vertices), size(vertSize) {
-
-    vbo = new VBO(vertices, vertSize);
-    vao = new VAO(*vbo, true);
+    vbo = new VBO(vertices, vertSize, stride);
+    vao = new VAO(*vbo);
 
     if (texCoords != nullptr && texSize > 0) {
         texCoordVBO = new VBO(texCoords, texSize, 2 * sizeof(float));
@@ -68,14 +67,12 @@ void Model::load_texture(const char *path) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     int width, height, channels;
-    // Explicitně načteme s RGBA formátem
     unsigned char *image = SOIL_load_image(path, &width, &height, &channels, SOIL_LOAD_RGBA);
 
     if (image == nullptr) {
         throw std::runtime_error("Failed to load texture: " + std::string(SOIL_last_result()));
     }
 
-    // Použijeme GL_RGBA místo GL_RGB
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
 

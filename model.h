@@ -10,10 +10,10 @@
 
 class Model {
 public:
-    Model(const float* data, GLsizeiptr size);
+    Model(const float* data, GLsizeiptr size, GLsizei stride = 6 * sizeof(GLfloat));
     Model(const float* vertices, GLsizeiptr vertSize,
           const float* texCoords, GLsizeiptr texSize,
-          const char* texturePath);
+          const char* texturePath, GLsizei stride = 6 * sizeof(GLfloat));
     ~Model();
 
     void draw() const;
@@ -25,9 +25,9 @@ public:
     Material& get_material();
 
     bool hasTexture = false;
-private:
     const float* data;
     GLsizeiptr size;
+private:
     VBO* vbo = nullptr;
     VAO* vao = nullptr;
     Material material;
@@ -35,7 +35,7 @@ private:
     GLuint textureID = 0;
     VBO* texCoordVBO = nullptr;
 
-    void create_arrays();
+    void create_arrays(GLsizei stride = 6 * sizeof(GLfloat));
     void load_texture(const char* path);
 };
 

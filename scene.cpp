@@ -2,6 +2,15 @@
 #include <iostream>
 #include <random>
 
+#include "application.h"
+
+void processInput(GLFWwindow* window, Skybox& skybox) {
+    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
+        printf("Switched\n");
+        skybox.switch_follow();
+    }
+}
+
 std::vector<Matrix *> generate_grid_matrices(const int grid_size = 7, const float scale = 0.05,
                                              const float spacing = 0.2f) {
     std::vector<Matrix *> matrices;
@@ -49,6 +58,11 @@ void Scene::init_camera(const glm::vec3 position, const float pitch) {
 }
 
 void Scene::render() {
+    if (skybox != nullptr) {
+        processInput(window, *skybox);
+        skybox->draw(camera->get_view_matrix(), camera->get_projection_matrix());
+    }
+
     for (const auto &drawable_object: render_objects) {
         drawable_object->shader_program->use_shader();
 
@@ -68,7 +82,7 @@ void Scene::render() {
         for (const auto &matrix: drawable_object->matrices) {
             drawable_object->model->bind_vao();
 
-            drawable_object->shader_program->set_model_mat(*matrix);
+            drawable_object->shader_program->set_model_mat(matrix->mat);
             drawable_object->shader_program->set_normal_matrix();
             drawable_object->shader_program->update_all_matrices();
             drawable_object->shader_program->apply_material(drawable_object->model->get_material());
@@ -265,6 +279,21 @@ void TextureForestScene::init() {
 
     const auto tree_matrices = generate_grid_matrices(8, 0.4, 4);
     const auto bush_matrices = generate_grid_matrices(18, 0.7, 1.5);
+
+    const std::vector<std::string> faces = {
+        "../posx.jpg",
+        "../negx.jpg",
+        "../posy.jpg",
+        "../negy.jpg",
+        "../posz.jpg",
+        "../negz.jpg"
+    };
+
+    try {
+        skybox = new Skybox(faces);
+    } catch (const std::runtime_error& e) {
+        std::cerr << "Failed to create skybox: " << e.what() << std::endl;
+    }
 
     for (int i = 0; i < 8 * 8; i++) {
         auto *tree_model = new Model(tree, sizeof(tree));

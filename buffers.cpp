@@ -1,6 +1,6 @@
 #include "buffers.h"
 
-VBO::VBO(const void* data, GLsizeiptr size, GLsizei stride) 
+VBO::VBO(const void *data, const GLsizeiptr size, const GLsizei stride)
     : stride(stride) {
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -11,20 +11,29 @@ VBO::~VBO() {
     glDeleteBuffers(1, &vbo);
 }
 
-VAO::VAO(const VBO& vbo, bool hasTexture) {
+VAO::VAO(const VBO &vbo) {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
-    
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+
+    if (vbo.stride <= 3 * sizeof(GLfloat)) {
+        glEnableVertexAttribArray(0);
+    } else {
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+    }
+
     glBindBuffer(GL_ARRAY_BUFFER, vbo.vbo);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vbo.stride, nullptr);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, vbo.stride,
-                         reinterpret_cast<GLvoid*>(3 * sizeof(float)));
+
+    if (vbo.stride <= 3 * sizeof(GLfloat)) {
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vbo.stride, nullptr);
+    } else {
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vbo.stride, nullptr);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, vbo.stride,
+                              reinterpret_cast<GLvoid *>(3 * sizeof(float)));
+    }
 }
 
-void VAO::add_texture_coords(const VBO& texCoordVBO) const {
+void VAO::add_texture_coords(const VBO &texCoordVBO) const {
     glBindVertexArray(vao);
     glEnableVertexAttribArray(2);
     glBindBuffer(GL_ARRAY_BUFFER, texCoordVBO.vbo);

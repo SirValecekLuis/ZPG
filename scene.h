@@ -15,6 +15,7 @@
 #include <GLFW/glfw3.h>
 
 #include "flashlight.h"
+#include "skybox.h"
 
 class DrawableObject {
 public:
@@ -56,6 +57,7 @@ protected:
     GLFWwindow *window;
     std::vector<DrawableObject *> render_objects;
     std::vector<ShaderProgram *> shader_programs;
+    Skybox *skybox = nullptr;
 };
 
 class ForestScene final : public Scene {

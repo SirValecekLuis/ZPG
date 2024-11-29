@@ -28,6 +28,7 @@ ShaderProgram::ShaderProgram(const char *vertex_file, const char *fragment_file)
     light_count_id = glGetUniformLocation(shader_id, "light_count");
     texture_sampler_id = glGetUniformLocation(shader_id, "textureSampler");
     use_texture_id = glGetUniformLocation(shader_id, "useTexture");
+    skybox_id = glGetUniformLocation(shader_id, "skyboxTexture");
 }
 
 ShaderProgram::~ShaderProgram() {
@@ -89,10 +90,9 @@ void ShaderProgram::update_lights() const {
     }
 }
 
-void ShaderProgram::set_model_mat(const Matrix &matrix) {
-    model_mat = matrix.mat;
+void ShaderProgram::set_model_mat(const glm::mat4 &mod) {
+    model_mat = mod;
 }
-
 
 void ShaderProgram::set_view_matrix(const glm::mat4 &view) {
     view_mat = view;
@@ -161,4 +161,10 @@ void ShaderProgram::bind_texture_uniforms(const GLuint textureUnit) const {
 
 void ShaderProgram::set_use_texture(const bool use_texture) {
     is_using_texture = use_texture;
+}
+
+void ShaderProgram::set_skyboxTexture(const int value) const {
+    if (skybox_id != -1) {
+        glUniform1i(skybox_id, value);
+    }
 }

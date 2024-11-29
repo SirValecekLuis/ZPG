@@ -32,6 +32,8 @@ add_executable(ZPG
         material.h
         flashlight.h
         bushes.h
+        skybox.cpp
+        skybox.h
 )
 
 find_package(glfw3 CONFIG REQUIRED)

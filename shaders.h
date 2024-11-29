@@ -20,7 +20,7 @@ public:
 
     void use_shader() const;
 
-    void set_model_mat(const Matrix &matrix);
+    void set_model_mat(const glm::mat4 &mod);
 
     void set_view_matrix(const glm::mat4 &view);
 
@@ -48,6 +48,8 @@ public:
 
     void set_use_texture(bool use_texture);
 
+    void set_skyboxTexture(int value = 0) const;
+
 private:
     GLuint shader_id;
     GLint model_matrix_id;
@@ -58,6 +60,7 @@ private:
     GLint light_count_id;
     GLint texture_sampler_id;
     GLint use_texture_id;
+    GLint skybox_id;
     bool is_using_texture = false;
 
     std::vector<Light *> lights;

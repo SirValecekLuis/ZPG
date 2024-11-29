@@ -15,7 +15,7 @@ public:
 
 class VAO {
 public:
-    explicit VAO(const VBO& vbo, bool hasTexture = false);
+    explicit VAO(const VBO& vbo);
     ~VAO();
 
     void bind_vao() const;
