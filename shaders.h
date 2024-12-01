@@ -42,13 +42,15 @@ public:
 
     void update_lights() const;
 
-    void apply_material(const Material& material) const;
+    void apply_material(const Material &material) const;
 
     void bind_texture_uniforms(GLuint textureUnit = 0) const;
 
     void set_use_texture(bool use_texture);
 
     void set_skyboxTexture(int value = 0) const;
+
+    void set_texture_unit(int value = 0) const;
 
 private:
     GLuint shader_id;
@@ -61,6 +63,8 @@ private:
     GLint texture_sampler_id;
     GLint use_texture_id;
     GLint skybox_id;
+    GLint texture_unit_id;
+
     bool is_using_texture = false;
 
     std::vector<Light *> lights;

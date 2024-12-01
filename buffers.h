@@ -6,23 +6,39 @@
 
 class VBO {
 public:
-    VBO(const void* data, GLsizeiptr size, GLsizei stride = 6 * sizeof(float));
+    VBO(const void *data, GLsizei size);
+
     ~VBO();
 
     GLuint vbo = 0;
-    GLsizei stride;
+};
+
+
+class IBO {
+public:
+    explicit IBO(const unsigned int *data, GLsizei size);
+
+    ~IBO();
+
+    GLuint ibo = 0;
 };
 
 class VAO {
 public:
-    explicit VAO(const VBO& vbo);
+    VAO(const VBO *vbo, const IBO *ibo, GLsizei stride = 6 * sizeof(float));
+
     ~VAO();
 
     void bind_vao() const;
-    void add_texture_coords(const VBO& texCoordVBO) const;
+
+
+    void add_texture_coords(const VBO &tex_coord) const;
 
 private:
     GLuint vao = 0;
+
+    GLsizei stride;
 };
+
 
 #endif //BUFFERS_H

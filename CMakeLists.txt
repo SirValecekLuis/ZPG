@@ -47,3 +47,6 @@ target_link_libraries(ZPG PRIVATE GLEW::GLEW)
 
 find_package(soil CONFIG REQUIRED)
 target_link_libraries(ZPG PRIVATE soil)
+
+find_package(assimp CONFIG REQUIRED)
+target_link_libraries(ZPG PRIVATE assimp::assimp)

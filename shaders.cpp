@@ -27,8 +27,9 @@ ShaderProgram::ShaderProgram(const char *vertex_file, const char *fragment_file)
     camera_pos_id = glGetUniformLocation(shader_id, "viewPosition");
     light_count_id = glGetUniformLocation(shader_id, "light_count");
     texture_sampler_id = glGetUniformLocation(shader_id, "textureSampler");
-    use_texture_id = glGetUniformLocation(shader_id, "useTexture");
+    use_texture_id = glGetUniformLocation(shader_id, "useTextureSampler");
     skybox_id = glGetUniformLocation(shader_id, "skyboxTexture");
+    texture_unit_id = glGetUniformLocation(shader_id, "textureUnitID");
 }
 
 ShaderProgram::~ShaderProgram() {
@@ -63,7 +64,9 @@ void ShaderProgram::add_light(Light *light) {
 }
 
 void ShaderProgram::update_lights() const {
-    glUniform1i(light_count_id, static_cast<GLint>(lights.size()));
+    if (light_count_id != -1) {
+        glUniform1i(light_count_id, static_cast<GLint>(lights.size()));
+    }
 
     for (size_t i = 0; i < lights.size(); ++i) {
         std::string base = "lights[" + std::to_string(i) + "].";
@@ -131,7 +134,6 @@ void ShaderProgram::update_all_matrices() {
     }
 
     bind_texture_uniforms();
-
     update_lights();
 }
 
@@ -166,5 +168,11 @@ void ShaderProgram::set_use_texture(const bool use_texture) {
 void ShaderProgram::set_skyboxTexture(const int value) const {
     if (skybox_id != -1) {
         glUniform1i(skybox_id, value);
+    }
+}
+
+void ShaderProgram::set_texture_unit(const int value) const {
+    if (texture_unit_id != -1) {
+        glUniform1i(texture_unit_id, value);
     }
 }

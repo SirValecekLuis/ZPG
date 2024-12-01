@@ -8,7 +8,7 @@ class FlashLight final : public Light, public Observer {
 public:
     FlashLight() : Light(LightType::SPOTLIGHT) {
         color = glm::vec3(1.0f, 1.0f, 1.0f);
-        intensity = 1.0f;
+        intensity = 2.5f;
         cutOff = glm::cos(glm::radians(12.5f));
         outerCutOff = glm::cos(glm::radians(17.5f));
     }

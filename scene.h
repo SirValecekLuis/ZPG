@@ -17,17 +17,17 @@
 #include "flashlight.h"
 #include "skybox.h"
 
-class DrawableObject {
+class DrawObject {
 public:
     Model *model;
     std::vector<Matrix *> matrices;
     ShaderProgram *shader_program;
 
-    DrawableObject(Model *model, const std::vector<Matrix *> &matrices, ShaderProgram *shader_program)
+    DrawObject(Model *model, const std::vector<Matrix *> &matrices, ShaderProgram *shader_program)
         : model(model), matrices(matrices), shader_program(shader_program) {
     }
 
-    DrawableObject(Model *model, Matrix *matrix, ShaderProgram *shader_program)
+    DrawObject(Model *model, Matrix *matrix, ShaderProgram *shader_program)
         : model(model), shader_program(shader_program) {
         matrices.push_back(matrix);
     }
@@ -47,7 +47,7 @@ public:
 
     void init_camera(glm::vec3 position = glm::vec3(0.0f, 10.0f, 0.0f), float pitch = -90.f);
 
-    void add_render_object(DrawableObject *render_object);
+    void add_render_object(DrawObject *render_object);
 
     Camera *camera;
 
@@ -55,7 +55,7 @@ public:
 
 protected:
     GLFWwindow *window;
-    std::vector<DrawableObject *> render_objects;
+    std::vector<DrawObject *> render_objects;
     std::vector<ShaderProgram *> shader_programs;
     Skybox *skybox = nullptr;
 };

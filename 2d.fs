@@ -2,13 +2,13 @@
 in vec2 TexCoord;
 
 uniform sampler2D textureSampler;
-uniform bool useTexture;
+uniform bool useTextureSampler;
 
 out vec4 FragColor;
 
 void main()
 {
-    if(useTexture) {
+    if(useTextureSampler) {
         vec4 texColor = texture(textureSampler, TexCoord);
 
         if(texColor.a < 0.1) {
