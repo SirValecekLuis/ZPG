@@ -61,7 +61,7 @@ private:
     GLint camera_pos_id;
     GLint light_count_id;
     GLint texture_sampler_id;
-    GLint use_texture_id;
+    GLint use_sampler_id;
     GLint skybox_id;
     GLint texture_unit_id;
 

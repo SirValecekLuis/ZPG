@@ -27,7 +27,7 @@ ShaderProgram::ShaderProgram(const char *vertex_file, const char *fragment_file)
     camera_pos_id = glGetUniformLocation(shader_id, "viewPosition");
     light_count_id = glGetUniformLocation(shader_id, "light_count");
     texture_sampler_id = glGetUniformLocation(shader_id, "textureSampler");
-    use_texture_id = glGetUniformLocation(shader_id, "useTextureSampler");
+    use_sampler_id = glGetUniformLocation(shader_id, "useTextureSampler");
     skybox_id = glGetUniformLocation(shader_id, "skyboxTexture");
     texture_unit_id = glGetUniformLocation(shader_id, "textureUnitID");
 }
@@ -156,8 +156,8 @@ void ShaderProgram::bind_texture_uniforms(const GLuint textureUnit) const {
     if (texture_sampler_id != -1) {
         glUniform1i(texture_sampler_id, textureUnit);
     }
-    if (use_texture_id != -1) {
-        glUniform1i(use_texture_id, is_using_texture ? 1 : 0);
+    if (use_sampler_id != -1) {
+        glUniform1i(use_sampler_id, is_using_texture ? 1 : 0);
     }
 }
 

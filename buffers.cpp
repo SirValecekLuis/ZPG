@@ -21,6 +21,10 @@ VAO::VAO(const VBO *vbo, const IBO *ibo, const GLsizei stride) : stride(stride) 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo->ibo);
     }
 
+    for (int i = 0; i < 4; i++) {
+        glDisableVertexAttribArray(i);
+    }
+
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
     if (stride > 3 * sizeof(GLfloat)) {

@@ -32,9 +32,12 @@ void Model::draw() const {
 
     if (indices != nullptr && vertices != nullptr) {
         glDrawElements(GL_TRIANGLES, indicies_count, GL_UNSIGNED_INT, nullptr);
+        glBindTexture(GL_TEXTURE_2D, 0);
     } else {
         glDrawArrays(GL_TRIANGLES, 0, size); // mode, first, count
     }
+
+    glBindVertexArray(0);
 }
 
 void Model::set_material(const float ra, const float rd, const float rs) {
@@ -181,12 +184,13 @@ void Model::create_3d_texture(const char *file_3d, const char *file_2d) {
     }
 
     is_set = true;
-    has_texture = true;
 }
 
 void Model::bind_texture() const {
     if (has_texture) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureID);
+    } else {
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }

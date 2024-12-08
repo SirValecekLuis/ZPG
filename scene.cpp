@@ -250,12 +250,11 @@ void TextureForestScene::init() {
     auto *tree_shader = new ShaderProgram("../light.vs", "../phong.fs");
     auto *house_shader = new ShaderProgram("../3d.vs", "../3d.fs");
     house_shader->set_use_texture(true);
-    // auto *login_shader = new ShaderProgram("../3d.vs", "../3d.fs");
     tree_shader->add_light(LightType::POINT, glm::vec3(0.0, 3.0, -10.0), glm::vec3(1, 1, 1), 1.5);
     tree_shader->add_light(LightType::POINT, glm::vec3(0.0, 3.0, 10.0), glm::vec3(1, 1, 1), 1.5);
+    tree_shader->add_light(LightType::DIRECTIONAL, glm::vec3(10.0, 0, 0.0), glm::vec3(1, 1, 1), 0.4);
     shader_programs.push_back(tree_shader);
     shader_programs.push_back(house_shader);
-    // shader_programs.push_back(login_shader);
     init_camera();
 
     tree_shader->add_light(flash_light);
@@ -264,11 +263,14 @@ void TextureForestScene::init() {
     auto *plain_model = new Model();
     plain_model->create_2d_texture(plain, sizeof(plain), "../grass.png", 5);
 
+    auto *login = new Model();
+    login->create_3d_texture("../login.obj", nullptr);
+
     auto *house = new Model();
     house->create_3d_texture("../house.obj", "../house.png");
 
-    // auto* login = new Model();
-    // login->create_3d_texture("../login.obj", nullptr);
+    auto *zombie = new Model();
+    zombie->create_3d_texture("../zombie.obj", "../zombie.png");
 
     const auto tree_matrices = generate_grid_matrices(8, 0.4, 4);
     const auto bush_matrices = generate_grid_matrices(18, 0.7, 1.5);
@@ -298,5 +300,6 @@ void TextureForestScene::init() {
     add_render_object(new DrawObject(bush_model, bush_matrices, tree_shader));
     add_render_object(new DrawObject(plain_model, new Matrix(0, 0, 0, 0, 0, 50), tree_shader));
     add_render_object(new DrawObject(house, new Matrix(0, 0, 20, 0, 20, 1), house_shader));
-    // add_render_object(new DrawObject(login, new Matrix(0, 0, 20, -10, 20, 1), login_shader));
+    add_render_object(new DrawObject(login, new Matrix(0, 0, 20, 20, 20, 0.3), house_shader));
+    add_render_object(new DrawObject(zombie, new Matrix(0, 0, 30, 0, 20, 3), house_shader));
 }
