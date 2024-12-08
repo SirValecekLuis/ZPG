@@ -8,10 +8,10 @@
 #include "model.h"
 #include "shaders.h"
 #include "camera.h"
-#include "tree.h"
+#include "models/tree.h"
 #include "bushes.h"
-#include "plain.h"
-#include "sphere.h"
+#include "models/plain.h"
+#include "models/sphere.h"
 #include <GLFW/glfw3.h>
 
 #include "flashlight.h"

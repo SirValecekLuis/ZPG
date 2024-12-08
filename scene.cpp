@@ -125,7 +125,7 @@ ForestScene::ForestScene(GLFWwindow *window) : Scene(window) {
 }
 
 void ForestScene::init() {
-    auto *tree_shader = new ShaderProgram("../light.vs", "../phong.fs");
+    auto *tree_shader = new ShaderProgram("../shaders/light.vs", "../shaders/phong.fs");
     shader_programs.push_back(tree_shader);
     init_camera();
 
@@ -156,7 +156,7 @@ ForestSceneDark::ForestSceneDark(GLFWwindow *window) : Scene(window) {
 }
 
 void ForestSceneDark::init() {
-    auto *tree_shader = new ShaderProgram("../light.vs", "../phong.fs");
+    auto *tree_shader = new ShaderProgram("../shaders/light.vs", "../shaders/phong.fs");
     shader_programs.push_back(tree_shader);
     init_camera();
 
@@ -178,7 +178,7 @@ BasicScene::BasicScene(GLFWwindow *window) : Scene(window) {
 }
 
 void BasicScene::init() {
-    auto *basic_shader = new ShaderProgram("../2d.vs", "../2d.fs");
+    auto *basic_shader = new ShaderProgram("../shaders/2d.vs", "../shaders/2d.fs");
     shader_programs.push_back(basic_shader);
     basic_shader->set_use_texture(true);
 
@@ -190,7 +190,7 @@ void BasicScene::init() {
         -0.5f, -0.5f, 0.0f, 0.f, 1.f, 0.f,
     };
     auto *triangle = new Model();
-    triangle->create_2d_texture(triangle_data, sizeof(triangle_data), "../wooden_fence.png", 5);
+    triangle->create_2d_texture(triangle_data, sizeof(triangle_data), "../models/wooden_fence.png", 5);
     add_render_object(new DrawObject(triangle, {new Matrix()}, basic_shader));
 }
 
@@ -198,7 +198,7 @@ PhongScene::PhongScene(GLFWwindow *window) : Scene(window) {
 }
 
 void PhongScene::init() {
-    auto *phong_shader = new ShaderProgram("../light.vs", "../phong.fs");
+    auto *phong_shader = new ShaderProgram("../shaders/light.vs", "../shaders/phong.fs");
     shader_programs.push_back(phong_shader);
     init_camera(glm::vec3(0.0, 0.0, 4.0), 0);
 
@@ -219,10 +219,10 @@ AllLightsScene::AllLightsScene(GLFWwindow *window) : Scene(window) {
 }
 
 void AllLightsScene::init() {
-    shader_programs.push_back(new ShaderProgram("../constant_light.vs", "../constant_light.fs"));
-    shader_programs.push_back(new ShaderProgram("../light.vs", "../lambert.fs"));
-    shader_programs.push_back(new ShaderProgram("../light.vs", "../phong.fs"));
-    shader_programs.push_back(new ShaderProgram("../light.vs", "../blinn.fs"));
+    shader_programs.push_back(new ShaderProgram("../shaders/constant_light.vs", "../shaders/constant_light.fs"));
+    shader_programs.push_back(new ShaderProgram("../shaders/light.vs", "../shaders/lambert.fs"));
+    shader_programs.push_back(new ShaderProgram("../shaders/light.vs", "../shaders/phong.fs"));
+    shader_programs.push_back(new ShaderProgram("../shaders/light.vs", "../shaders/blinn.fs"));
 
     init_camera(glm::vec3(0.0, 0.0, 4.0), 0);
 
@@ -247,8 +247,8 @@ TextureForestScene::TextureForestScene(GLFWwindow *window) : Scene(window) {
 }
 
 void TextureForestScene::init() {
-    auto *tree_shader = new ShaderProgram("../light.vs", "../phong.fs");
-    auto *house_shader = new ShaderProgram("../3d.vs", "../3d.fs");
+    auto *tree_shader = new ShaderProgram("../shaders/light.vs", "../shaders/phong.fs");
+    auto *house_shader = new ShaderProgram("../shaders/3d.vs", "../shaders/3d.fs");
     house_shader->set_use_texture(true);
     tree_shader->add_light(LightType::POINT, glm::vec3(0.0, 3.0, -10.0), glm::vec3(1, 1, 1), 1.5);
     tree_shader->add_light(LightType::POINT, glm::vec3(0.0, 3.0, 10.0), glm::vec3(1, 1, 1), 1.5);
@@ -261,27 +261,27 @@ void TextureForestScene::init() {
 
     auto *bush_model = new Model(bushes, sizeof(bushes));
     auto *plain_model = new Model();
-    plain_model->create_2d_texture(plain, sizeof(plain), "../grass.png", 5);
+    plain_model->create_2d_texture(plain, sizeof(plain), "../models/grass.png", 5);
 
     // auto *login = new Model();
-    // login->create_3d_texture("../login.obj", nullptr);
+    // login->create_3d_texture("../models/login.obj", nullptr);
 
     auto *house = new Model();
-    house->create_3d_texture("../house.obj", "../house.png");
+    house->create_3d_texture("../models/house.obj", "../models/house.png");
 
     // auto *zombie = new Model();
-    // zombie->create_3d_texture("../zombie.obj", "../zombie.png");
+    // zombie->create_3d_texture("../models/zombie.obj", "../models/zombie.png");
 
     const auto tree_matrices = generate_grid_matrices(8, 0.4, 4);
     const auto bush_matrices = generate_grid_matrices(18, 0.7, 1.5);
 
     const std::vector<std::string> faces = {
-        "../posx.jpg",
-        "../negx.jpg",
-        "../posy.jpg",
-        "../negy.jpg",
-        "../posz.jpg",
-        "../negz.jpg"
+        "../models/posx.jpg",
+        "../models/negx.jpg",
+        "../models/posy.jpg",
+        "../models/negy.jpg",
+        "../models/posz.jpg",
+        "../models/negz.jpg"
     };
 
     try {

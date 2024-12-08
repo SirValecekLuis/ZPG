@@ -48,7 +48,7 @@ const float Skybox::skyboxVertices[] = {
 Skybox::Skybox(const std::vector<std::string> &faces) {
     cube_model = new Model(skyboxVertices, sizeof(skyboxVertices), 3 * sizeof(GLfloat));
 
-    shader = new ShaderProgram("../skybox.vs", "../skybox.fs");
+    shader = new ShaderProgram("../shaders/skybox.vs", "../shaders/skybox.fs");
 
     load_cubemap(faces);
 }
