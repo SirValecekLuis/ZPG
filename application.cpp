@@ -6,6 +6,10 @@
 
 static void error_callback(int error, const char *description) { fputs(description, stderr); }
 
+static void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
 void Application::init() {
     glfwSetErrorCallback(error_callback);
     if (!glfwInit()) {
@@ -21,6 +25,8 @@ void Application::init() {
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
+
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // start GLEW extension handler
     glewExperimental = GL_TRUE;

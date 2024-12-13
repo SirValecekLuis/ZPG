@@ -46,6 +46,7 @@ Scene::~Scene() {
 
 void Scene::init_camera(const glm::vec3 position, const float pitch) {
     camera = new Camera(position, pitch);
+    camera->window = window;
     flash_light = new FlashLight();
 
     for (auto *shader: shader_programs) {

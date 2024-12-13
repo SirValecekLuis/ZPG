@@ -14,8 +14,7 @@ Camera::Camera(glm::vec3 position, float pitch, glm::vec3 up, float yaw)
       pitch(pitch),
       movement_speed(5.0f),
       mouse_sensitivity(0.1f),
-      zoom(60.0f)
-{
+      zoom(90.0f) {
     front = glm::vec3(0.0f, 0.0f, -1.0f);
     right = glm::vec3(1.0f, 0.0f, 0.0f);
 
@@ -27,7 +26,10 @@ glm::mat4 Camera::get_view_matrix() const {
 }
 
 glm::mat4 Camera::get_projection_matrix() const {
-    return glm::perspective(glm::radians(zoom), 16.0f / 9.0f, 0.1f, 1000.0f);
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    float aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
+    return glm::perspective(glm::radians(zoom), aspect_ratio, 0.1f, 100.0f);
 }
 
 void Camera::move(const glm::vec3 &offset) {

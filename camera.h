@@ -12,6 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include "observer.h"
 
@@ -54,6 +55,8 @@ public:
     [[nodiscard]] glm::vec3 get_camera_pos() const;
 
     [[nodiscard]] glm::vec3 get_front() const;
+
+    GLFWwindow *window = nullptr;
 
 private:
     glm::vec3 position;
