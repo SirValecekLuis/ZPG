@@ -14,24 +14,10 @@
 #include "models/sphere.h"
 #include <GLFW/glfw3.h>
 
+#include "DrawObject.h"
 #include "flashlight.h"
 #include "skybox.h"
 
-class DrawObject {
-public:
-    Model *model;
-    std::vector<Matrix *> matrices;
-    ShaderProgram *shader_program;
-
-    DrawObject(Model *model, const std::vector<Matrix *> &matrices, ShaderProgram *shader_program)
-        : model(model), matrices(matrices), shader_program(shader_program) {
-    }
-
-    DrawObject(Model *model, Matrix *matrix, ShaderProgram *shader_program)
-        : model(model), shader_program(shader_program) {
-        matrices.push_back(matrix);
-    }
-};
 
 class Scene {
 public:

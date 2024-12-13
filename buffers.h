@@ -37,7 +37,6 @@ public:
 private:
     GLuint vao = 0;
 
-    GLsizei stride;
 };
 
 

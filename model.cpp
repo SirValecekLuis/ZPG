@@ -32,7 +32,6 @@ void Model::draw() const {
 
     if (indices != nullptr && vertices != nullptr) {
         glDrawElements(GL_TRIANGLES, indicies_count, GL_UNSIGNED_INT, nullptr);
-        glBindTexture(GL_TEXTURE_2D, 0);
     } else {
         glDrawArrays(GL_TRIANGLES, 0, size); // mode, first, count
     }
@@ -103,6 +102,8 @@ void Model::create_3d_texture(const char *file_3d, const char *file_2d) {
     if (file_2d != nullptr) {
         glActiveTexture(GL_TEXTURE0);
         textureID = SOIL_load_OGL_texture(file_2d, SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+        printf("Loaded texture ID: %d\n", textureID);
+
         if (textureID == 0) {
             std::cout << "An error occurred while loading texture." << std::endl;
             exit(EXIT_FAILURE);
@@ -122,22 +123,18 @@ void Model::create_3d_texture(const char *file_3d, const char *file_2d) {
     const aiScene *scene = importer.ReadFile(file_3d, importOptions);
 
     if (scene) {
-        //pokud bylo nacteni uspesne
-        printf("scene->mNumMeshes = %d\n", scene->mNumMeshes);
-        printf("scene->mNumMaterials = %d\n", scene->mNumMaterials);
-        //Materials
-        // for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
-        //     const aiMaterial *mat = scene->mMaterials[i];
-        //     aiString name;
-        //     mat->Get(AI_MATKEY_NAME, name);
-        //     printf("Material [%d] name %s\n", i, name.C_Str());
-        //     aiColor4D d;
-        //     glm::vec4 diffuse = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
-        //     if (AI_SUCCESS == aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &d))
-        //         diffuse = glm::vec4(d.r, d.g, d.b, d.a);
-        // }
+        if (scene->mNumMeshes == 0) {
+            std::cerr << "No meshes found in the model!" << std::endl;
+            return;
+        }
 
         aiMesh *mesh = scene->mMeshes[0];
+        std::cout << "Vertices: " << mesh->mNumVertices << std::endl;
+        std::cout << "Faces: " << mesh->mNumFaces << std::endl;
+        std::cout << "Has Positions: " << mesh->HasPositions() << std::endl;
+        std::cout << "Has Normals: " << mesh->HasNormals() << std::endl;
+        std::cout << "Has Texture Coords: " << mesh->HasTextureCoords(0) << std::endl;
+
         vertices = new Vertex[mesh->mNumVertices];
         std::memset(vertices, 0, sizeof(Vertex) * mesh->mNumVertices);
         for (unsigned int j = 0; j < mesh->mNumVertices; j++) {
@@ -180,7 +177,7 @@ void Model::create_3d_texture(const char *file_3d, const char *file_2d) {
 
         indicies_count = mesh->mNumFaces * 3;
     } else {
-        printf("Error during parsing mesh from %s : %s \n", file_3d, importer.GetErrorString());
+        std::cerr << "Failed to load scene: " << importer.GetErrorString() << std::endl;
     }
 
     is_set = true;

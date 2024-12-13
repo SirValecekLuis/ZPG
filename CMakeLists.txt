@@ -34,6 +34,7 @@ add_executable(ZPG
         bushes.h
         skybox.cpp
         skybox.h
+        DrawObject.h
 )
 
 find_package(glfw3 CONFIG REQUIRED)

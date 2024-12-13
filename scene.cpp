@@ -263,14 +263,14 @@ void TextureForestScene::init() {
     auto *plain_model = new Model();
     plain_model->create_2d_texture(plain, sizeof(plain), "../models/grass.png", 5);
 
-    // auto *login = new Model();
-    // login->create_3d_texture("../models/login.obj", nullptr);
+    auto *login = new Model();
+    login->create_3d_texture("../models/login.obj", nullptr);
 
     auto *house = new Model();
     house->create_3d_texture("../models/house.obj", "../models/house.png");
 
-    // auto *zombie = new Model();
-    // zombie->create_3d_texture("../models/zombie.obj", "../models/zombie.png");
+    auto *zombie = new Model();
+    zombie->create_3d_texture("../models/zombie.obj", "../models/zombie.png");
 
     const auto tree_matrices = generate_grid_matrices(8, 0.4, 4);
     const auto bush_matrices = generate_grid_matrices(18, 0.7, 1.5);
@@ -300,6 +300,6 @@ void TextureForestScene::init() {
     add_render_object(new DrawObject(bush_model, bush_matrices, tree_shader));
     add_render_object(new DrawObject(plain_model, new Matrix(0, 0, 0, 0, 0, 50), tree_shader));
     add_render_object(new DrawObject(house, new Matrix(0, 0, 20, 0, 20, 1), house_shader));
-    // add_render_object(new DrawObject(login, new Matrix(0, 0, 20, 20, 20, 0.3), house_shader));
-    // add_render_object(new DrawObject(zombie, new Matrix(0, 0, 30, 0, 20, 3), house_shader));
+    add_render_object(new DrawObject(login, new Matrix(0, 0, 20, 20, 20, 0.3), house_shader));
+    add_render_object(new DrawObject(zombie, new Matrix(0, 0, 30, 0, 20, 3), house_shader));
 }
